@@ -1,7 +1,7 @@
 <?php
 /**
  * Single Post Template
- * 
+ *
  * @package CustomShop
  */
 
@@ -10,79 +10,247 @@ if (!defined('ABSPATH')) exit;
 get_header();
 ?>
 
-<div id="primary" class="content-area">
-    <main id="main" class="site-main">
+<?php
+while (have_posts()) :
+    the_post();
 
+    // Get product data if this is a WooCommerce product
+    if (class_exists('WooCommerce') && get_post_type() === 'product') {
+        global $product;
+        $product = wc_get_product(get_the_ID());
+
+        // Get product images
+        $product_image_id = $product->get_image_id();
+        $product_gallery_ids = $product->get_gallery_image_ids();
+        $main_image = wp_get_attachment_image_url($product_image_id, 'full');
+
+        // Get price
+        $price = $product->get_price_html();
+
+        // Get SKU
+        $sku = $product->get_sku();
+?>
+
+<div class="product">
+	<div class="product-gallery">
+
+		<!-- Главное изображение -->
+		<div class="product-gallery__main">
+			<a href="<?php echo esc_url($main_image); ?>" data-fancybox="gallery">
+				<img src="<?php echo esc_url($main_image); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
+			</a>
+		</div>
+
+		<!-- Сетка изображений (2 колонки) -->
+		<?php if (!empty($product_gallery_ids)) : ?>
+		<div class="product-gallery__grid">
+			<?php
+			$gallery_count = 0;
+			foreach ($product_gallery_ids as $gallery_image_id) :
+			    if ($gallery_count >= 3) break;
+			    $gallery_image = wp_get_attachment_image_url($gallery_image_id, 'full');
+			?>
+			<a href="<?php echo esc_url($gallery_image); ?>" data-fancybox="gallery" class="product-gallery__item">
+				<img src="<?php echo esc_url($gallery_image); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
+			</a>
+			<?php
+			$gallery_count++;
+			endforeach;
+			?>
+		</div>
+		<?php endif; ?>
+	</div>
+
+	<div class="product-info">
+		<h1 class="product-info__title"><?php the_title(); ?></h1>
+
+		<div class="product-info__price"><?php echo $price; ?></div>
+
+		<?php if ($product->is_type('variable')) : ?>
+		<!-- Цвета -->
+		<div class="product-info__colors">
+			<label class="product-info__label"><?php _e('Color', 'kerning-geoshop'); ?></label>
+			<div class="product-info__color-list">
+				<!-- Colors will be populated dynamically -->
+			</div>
+		</div>
+
+		<!-- Размеры -->
+		<div class="product-info__sizes">
+			<label class="product-info__label"><?php _e('Size', 'kerning-geoshop'); ?></label>
+			<div class="product-info__size-list">
+				<!-- Sizes will be populated dynamically -->
+			</div>
+		</div>
+		<?php endif; ?>
+
+		<!-- Количество -->
+		<div class="product-info__quantity-block">
+			<label class="product-info__label"><?php _e('Amount', 'kerning-geoshop'); ?></label>
+			<div class="product-info__quantity">
+				<button type="button" class="qty-minus">-</button>
+				<input type="number" value="1" min="1" />
+				<button type="button" class="qty-plus">+</button>
+			</div>
+		</div>
+
+		<!-- Кнопки действий -->
+		<div class="product-info__actions">
+			<button type="submit" class="btn btn--secondary"><?php _e('Add to cart', 'kerning-geoshop'); ?></button>
+			<button type="button" class="btn btn--primary"><?php _e('Buy now', 'kerning-geoshop'); ?></button>
+		</div>
+
+		<!-- SKU -->
+		<?php if ($sku) : ?>
+		<div class="product-info__sku">
+			<span class="product-info__sku-label"><?php _e('SKU:', 'kerning-geoshop'); ?></span>
+			<span class="product-info__sku-value"><?php echo esc_html($sku); ?></span>
+		</div>
+		<?php endif; ?>
+	</div>
+</div>
+
+<div class="product-description">
+	<div class="product-description__container">
+		<h2 class="product-description__title"><?php _e('Description', 'kerning-geoshop'); ?></h2>
+		<div class="product-description__content">
+			<?php the_content(); ?>
+		</div>
+	</div>
+</div>
+
+<!-- You may also like section -->
+<?php
+// Get related products
+$related_ids = wc_get_related_products($product->get_id(), 5);
+if (!empty($related_ids)) :
+?>
+<section class="recommendations">
+	<div class="recommendations__container">
+		<h2 class="recommendations__title"><?php _e('You may also like...', 'kerning-geoshop'); ?></h2>
+		<div class="products">
+			<?php
+			foreach ($related_ids as $related_id) :
+			    $related_product = wc_get_product($related_id);
+			    if (!$related_product) continue;
+
+			    $related_image_id = $related_product->get_image_id();
+			    $related_image = wp_get_attachment_image_url($related_image_id, 'medium');
+			    $related_price = $related_product->get_price_html();
+			    $related_regular_price = $related_product->get_regular_price();
+			    $related_sale_price = $related_product->get_sale_price();
+			    $is_on_sale = $related_product->is_on_sale();
+
+			    // Calculate discount percentage
+			    $discount_percent = '';
+			    if ($is_on_sale && $related_regular_price) {
+			        $discount = (($related_regular_price - $related_sale_price) / $related_regular_price) * 100;
+			        $discount_percent = '-' . round($discount) . '%';
+			    }
+
+			    // Get variation colors count (if variable product)
+			    $colors_count = '';
+			    if ($related_product->is_type('variable')) {
+			        $variations = $related_product->get_available_variations();
+			        $colors_count = count($variations) . ' ' . __('colors', 'kerning-geoshop');
+			    }
+			?>
+			<div class="product">
+				<?php if ($colors_count) : ?>
+				<span class="colors-count"><?php echo esc_html($colors_count); ?></span>
+				<?php endif; ?>
+				<?php if ($discount_percent) : ?>
+				<span class="sale-percent"><?php echo esc_html($discount_percent); ?></span>
+				<?php endif; ?>
+				<div class="product__img">
+					<a href="<?php echo get_permalink($related_id); ?>">
+						<img src="<?php echo esc_url($related_image); ?>" alt="<?php echo esc_attr($related_product->get_name()); ?>">
+					</a>
+				</div>
+				<div class="product__footer">
+					<div class="product__footer-info">
+						<div class="product__title">
+							<a href="<?php echo get_permalink($related_id); ?>">
+								<h3><?php echo esc_html($related_product->get_name()); ?></h3>
+							</a>
+						</div>
+						<div class="product__price">
+							<?php echo $related_price; ?>
+						</div>
+					</div>
+					<div class="product__footer-action">
+						<button class="add-to-cart" data-product-id="<?php echo esc_attr($related_id); ?>">
+							<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.8574 0V9.14258H20V10.8574H10.8574V20H9.14258V10.8574H0V9.14258H9.14258V0H10.8574Z" fill="#176DAA"/></svg>
+						</button>
+					</div>
+				</div>
+			</div>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</section>
+<?php endif; ?>
+
+    <?php } else { ?>
+
+<!-- For regular posts (non-WooCommerce) -->
+<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+
+    <header class="entry-header">
+        <?php the_title('<h1 class="entry-title">', '</h1>'); ?>
+
+        <div class="entry-meta">
+            <span class="posted-on">
+                <?php echo get_the_date(); ?>
+            </span>
+            <span class="byline">
+                <?php echo ' | ' . __('Author:', 'kerning-geoshop') . ' ' . get_the_author(); ?>
+            </span>
+            <?php if (has_category()) : ?>
+            <span class="cat-links">
+                <?php echo ' | ' . __('Category:', 'kerning-geoshop') . ' '; the_category(', '); ?>
+            </span>
+            <?php endif; ?>
+        </div><!-- .entry-meta -->
+    </header><!-- .entry-header -->
+
+    <?php if (has_post_thumbnail()) : ?>
+    <div class="post-thumbnail">
+        <?php the_post_thumbnail('large'); ?>
+    </div>
+    <?php endif; ?>
+
+    <div class="entry-content">
         <?php
-        while (have_posts()) :
-            the_post();
-            ?>
-            
-            <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-                
-                <header class="entry-header">
-                    <?php the_title('<h1 class="entry-title">', '</h1>'); ?>
-                    
-                    <div class="entry-meta">
-                        <span class="posted-on">
-                            <?php echo get_the_date(); ?>
-                        </span>
-                        <span class="byline">
-                            <?php echo ' | Автор: ' . get_the_author(); ?>
-                        </span>
-                        <?php if (has_category()) : ?>
-                        <span class="cat-links">
-                            <?php echo ' | Рубрика: '; the_category(', '); ?>
-                        </span>
-                        <?php endif; ?>
-                    </div><!-- .entry-meta -->
-                </header><!-- .entry-header -->
+        the_content();
 
-                <?php if (has_post_thumbnail()) : ?>
-                <div class="post-thumbnail">
-                    <?php the_post_thumbnail('large'); ?>
-                </div>
-                <?php endif; ?>
-
-                <div class="entry-content">
-                    <?php
-                    the_content();
-
-                    wp_link_pages(array(
-                        'before' => '<div class="page-links">' . esc_html__('Страницы:', 'customshop'),
-                        'after'  => '</div>',
-                    ));
-                    ?>
-                </div><!-- .entry-content -->
-
-                <footer class="entry-footer">
-                    <?php
-                    if (has_tag()) :
-                        the_tags('<span class="tags-links">Метки: ', ', ', '</span>');
-                    endif;
-                    ?>
-                </footer><!-- .entry-footer -->
-                
-            </article><!-- #post-<?php the_ID(); ?> -->
-
-            <?php
-            // Навигация между постами
-            the_post_navigation(array(
-                'prev_text' => '<span class="nav-subtitle">' . esc_html__('Предыдущая запись:', 'customshop') . '</span> <span class="nav-title">%title</span>',
-                'next_text' => '<span class="nav-subtitle">' . esc_html__('Следующая запись:', 'customshop') . '</span> <span class="nav-title">%title</span>',
-            ));
-
-            // Комментарии
-            if (comments_open() || get_comments_number()) :
-                comments_template();
-            endif;
-
-        endwhile;
+        wp_link_pages(array(
+            'before' => '<div class="page-links">' . esc_html__('Pages:', 'kerning-geoshop'),
+            'after'  => '</div>',
+        ));
         ?>
+    </div><!-- .entry-content -->
 
-    </main><!-- #main -->
-</div><!-- #primary -->
+    <footer class="entry-footer">
+        <?php
+        if (has_tag()) :
+            the_tags('<span class="tags-links">' . __('Tags:', 'kerning-geoshop') . ' ', ', ', '</span>');
+        endif;
+        ?>
+    </footer><!-- .entry-footer -->
+
+</article><!-- #post-<?php the_ID(); ?> -->
 
 <?php
-get_sidebar();
+// Навигация между постами
+the_post_navigation(array(
+    'prev_text' => '<span class="nav-subtitle">' . esc_html__('Previous post:', 'kerning-geoshop') . '</span> <span class="nav-title">%title</span>',
+    'next_text' => '<span class="nav-subtitle">' . esc_html__('Next post:', 'kerning-geoshop') . '</span> <span class="nav-title">%title</span>',
+));
+
+    <?php } ?>
+
+<?php endwhile; ?>
+
+<?php
 get_footer();
