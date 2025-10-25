@@ -50,7 +50,7 @@ function customshop_add_ajax_class_to_single_product($html, $product, $args) {
 }
 
 /**
- * AJAX обработчик для добавления в корзину со страницы товара
+ * AJAX handler for adding products to cart
  */
 add_action('wp_ajax_woocommerce_ajax_add_to_cart', 'customshop_ajax_add_to_cart');
 add_action('wp_ajax_nopriv_woocommerce_ajax_add_to_cart', 'customshop_ajax_add_to_cart');
@@ -58,17 +58,102 @@ add_action('wp_ajax_nopriv_woocommerce_ajax_add_to_cart', 'customshop_ajax_add_t
 function customshop_ajax_add_to_cart() {
     // Проверяем, что это AJAX запрос и данные существуют
     if (!isset($_POST['product_id'])) {
-        wp_send_json_error('Missing product_id');
-        wp_die();
+        wp_send_json_error(array('message' => 'Missing product_id'));
+        return;
     }
+
+    // DEBUG: Log what we receive
+    error_log('========== ADD TO CART DEBUG ==========');
+    error_log('POST keys: ' . implode(', ', array_keys($_POST)));
+    error_log('variation_id in POST: ' . (isset($_POST['variation_id']) ? $_POST['variation_id'] : 'NOT SET'));
+    error_log('Full POST: ' . print_r($_POST, true));
 
     $product_id = apply_filters('woocommerce_add_to_cart_product_id', absint($_POST['product_id']));
     $quantity = empty($_POST['quantity']) ? 1 : wc_stock_amount($_POST['quantity']);
     $variation_id = isset($_POST['variation_id']) ? absint($_POST['variation_id']) : 0;
-    $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $quantity);
+
+    error_log('After parsing - variation_id: ' . $variation_id);
+    error_log('=======================================');
+
+    // Get variation attributes if this is a variable product
+    $variation = array();
+    if ($variation_id > 0) {
+        $variation_product = wc_get_product($variation_id);
+        if ($variation_product) {
+            $variation = $variation_product->get_variation_attributes();
+        }
+    } else {
+        // Try to get attributes from POST data
+        foreach ($_POST as $key => $value) {
+            if (strpos($key, 'attribute_') === 0) {
+                $variation[$key] = sanitize_text_field($value);
+            }
+        }
+    }
+
+    $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $quantity, $variation_id, $variation);
     $product_status = get_post_status($product_id);
 
-    if ($passed_validation && WC()->cart->add_to_cart($product_id, $quantity, $variation_id) && 'publish' === $product_status) {
+    if (!$passed_validation) {
+        wp_send_json_error(array('message' => 'Validation failed'));
+        return;
+    }
+
+    if ('publish' !== $product_status) {
+        wp_send_json_error(array('message' => 'Product is not available'));
+        return;
+    }
+
+    // Ensure WooCommerce session is started
+    if (WC()->session && !WC()->session->has_session()) {
+        WC()->session->set_customer_session_cookie(true);
+    }
+
+    // Get the product to check its type
+    $product = wc_get_product($product_id);
+    if (!$product) {
+        wp_send_json_error(array('message' => 'Product not found'));
+        return;
+    }
+
+    // Check if this is a variable product but no variation selected
+    if ($product->is_type('variable') && $variation_id === 0 && empty($variation)) {
+        wp_send_json_error(array('message' => 'Please select product options'));
+        return;
+    }
+
+    // If we have variation attributes but no variation_id, try to find the matching variation
+    if ($product->is_type('variable') && $variation_id === 0 && !empty($variation)) {
+        $data_store = WC_Data_Store::load('product');
+        $variation_id = $data_store->find_matching_product_variation($product, $variation);
+
+        if (!$variation_id) {
+            wp_send_json_error(array('message' => 'Could not find matching product variation'));
+            return;
+        }
+    }
+
+    $cart_item_key = WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation);
+
+    // If failed, get WooCommerce notices/errors
+    if (!$cart_item_key) {
+        $notices = wc_get_notices('error');
+        wc_clear_notices();
+
+        // Get first error message if available
+        $error_message = 'Could not add product to cart';
+        if (!empty($notices)) {
+            $first_notice = reset($notices);
+            if (isset($first_notice['notice'])) {
+                $error_message = $first_notice['notice'];
+            }
+        }
+
+        wp_send_json_error(array('message' => $error_message));
+        return;
+    }
+
+    if ($cart_item_key) {
         do_action('woocommerce_ajax_added_to_cart', $product_id);
 
         if ('yes' === get_option('woocommerce_cart_redirect_after_add')) {
@@ -77,12 +162,8 @@ function customshop_ajax_add_to_cart() {
 
         WC_AJAX::get_refreshed_fragments();
     } else {
-        $data = array(
-            'error' => true,
-            'product_url' => apply_filters('woocommerce_cart_redirect_after_error', get_permalink($product_id), $product_id)
-        );
-
-        wp_send_json($data);
+        error_log('Add to cart - Failed to add product to cart');
+        wp_send_json_error(array('message' => 'Could not add product to cart'));
     }
 
     wp_die();
@@ -104,7 +185,12 @@ function customshop_mini_cart_fragments($fragments) {
     // Обновление тела мини-корзины
     ob_start();
     woocommerce_mini_cart();
-    $fragments['.mini-cart-body'] = '<div class="mini-cart-body">' . ob_get_clean() . '</div>';
+    $mini_cart_html = ob_get_clean();
+
+    $fragments['.mini-cart-body'] = '<div class="mini-cart-body">' . $mini_cart_html . '</div>';
+
+    // Also add the full widget content for compatibility
+    $fragments['div.widget_shopping_cart_content'] = '<div class="widget_shopping_cart_content">' . $mini_cart_html . '</div>';
 
     return $fragments;
 }

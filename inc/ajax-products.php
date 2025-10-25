@@ -31,20 +31,46 @@ function customshop_ajax_get_product_variations() {
     $image_id = $product->get_image_id();
     $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'woocommerce_single') : wc_placeholder_img_src();
 
-    // Get product attributes
+    // Get product attributes with proper formatting
     $attributes = array();
     $available_variations = $product->get_available_variations();
 
     foreach ($product->get_variation_attributes() as $attribute_name => $options) {
         $attribute_label = wc_attribute_label($attribute_name);
+        $taxonomy = str_replace('pa_', '', $attribute_name);
 
-        // Normalize attribute name for JavaScript
-        $normalized_name = 'attribute_' . sanitize_title($attribute_name);
+        // Format options with color codes for color attributes
+        $formatted_options = array();
 
-        $attributes[$normalized_name] = array(
-            'label' => $attribute_label,
-            'options' => $options
-        );
+        foreach ($options as $option_slug) {
+            $term = get_term_by('slug', $option_slug, $attribute_name);
+
+            $option_data = array(
+                'name' => $term ? $term->name : $option_slug,
+                'slug' => $option_slug
+            );
+
+            // Get color code if this is a color attribute
+            if (strpos($attribute_name, 'color') !== false || strpos($attribute_name, 'pa_color') !== false) {
+                $color = '';
+
+                // Try to get color from term meta
+                if ($term) {
+                    $color = get_term_meta($term->term_id, 'color', true);
+                }
+
+                // If no color in meta, generate from color name
+                if (empty($color)) {
+                    $color = customshop_get_color_from_name($term ? $term->name : $option_slug);
+                }
+
+                $option_data['color'] = $color;
+            }
+
+            $formatted_options[] = $option_data;
+        }
+
+        $attributes[$attribute_name] = $formatted_options;
     }
 
     // Format variations
@@ -52,18 +78,13 @@ function customshop_ajax_get_product_variations() {
     foreach ($available_variations as $variation) {
         $variation_obj = wc_get_product($variation['variation_id']);
 
-        // Normalize attribute keys in variation
-        $normalized_attributes = array();
-        foreach ($variation['attributes'] as $key => $value) {
-            // Key already comes with 'attribute_' prefix from WooCommerce
-            $normalized_attributes[$key] = $value;
-        }
-
         $variations[] = array(
             'variation_id' => $variation['variation_id'],
-            'attributes' => $normalized_attributes,
+            'attributes' => $variation['attributes'],
             'price_html' => $variation_obj->get_price_html(),
             'is_in_stock' => $variation['is_in_stock'],
+            'sku' => $variation_obj->get_sku(),
+            'max_qty' => $variation_obj->get_stock_quantity() ? $variation_obj->get_stock_quantity() : '',
             'image' => isset($variation['image']['url']) ? $variation['image']['url'] : $image_url
         );
     }
@@ -214,4 +235,89 @@ function customshop_ajax_get_additional_products() {
     ));
 
     wp_die();
+}
+
+/**
+ * Get color hex code from color name
+ *
+ * @param string $color_name Color name (e.g., "Red", "Blue", "Black")
+ * @return string Hex color code
+ */
+function customshop_get_color_from_name($color_name) {
+    $color_name = strtolower(trim($color_name));
+
+    // Common color mappings
+    $color_map = array(
+        // Basic colors
+        'black' => '#000000',
+        'white' => '#FFFFFF',
+        'red' => '#FF0000',
+        'blue' => '#0000FF',
+        'green' => '#008000',
+        'yellow' => '#FFFF00',
+        'orange' => '#FFA500',
+        'purple' => '#800080',
+        'pink' => '#FFC0CB',
+        'brown' => '#8B4513',
+        'gray' => '#808080',
+        'grey' => '#808080',
+
+        // Extended colors
+        'navy' => '#000080',
+        'teal' => '#008080',
+        'lime' => '#00FF00',
+        'aqua' => '#00FFFF',
+        'maroon' => '#800000',
+        'olive' => '#808000',
+        'silver' => '#C0C0C0',
+        'gold' => '#FFD700',
+        'beige' => '#F5F5DC',
+        'tan' => '#D2B48C',
+        'khaki' => '#F0E68C',
+        'cyan' => '#00FFFF',
+        'magenta' => '#FF00FF',
+        'violet' => '#EE82EE',
+        'indigo' => '#4B0082',
+        'turquoise' => '#40E0D0',
+        'coral' => '#FF7F50',
+        'salmon' => '#FA8072',
+        'crimson' => '#DC143C',
+        'chocolate' => '#D2691E',
+
+        // Shades
+        'dark blue' => '#00008B',
+        'light blue' => '#ADD8E6',
+        'dark green' => '#006400',
+        'light green' => '#90EE90',
+        'dark red' => '#8B0000',
+        'dark gray' => '#A9A9A9',
+        'light gray' => '#D3D3D3',
+        'dark grey' => '#A9A9A9',
+        'light grey' => '#D3D3D3',
+
+        // Other common names
+        'cream' => '#FFFDD0',
+        'ivory' => '#FFFFF0',
+        'mint' => '#98FF98',
+        'lavender' => '#E6E6FA',
+        'peach' => '#FFE5B4',
+        'burgundy' => '#800020',
+        'mustard' => '#FFDB58',
+        'charcoal' => '#36454F',
+    );
+
+    // Check if color exists in map
+    if (isset($color_map[$color_name])) {
+        return $color_map[$color_name];
+    }
+
+    // Try to match partial names
+    foreach ($color_map as $name => $hex) {
+        if (strpos($color_name, $name) !== false || strpos($name, $color_name) !== false) {
+            return $hex;
+        }
+    }
+
+    // Default fallback - generate from string hash
+    return '#' . substr(md5($color_name), 0, 6);
 }

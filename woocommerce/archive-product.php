@@ -16,20 +16,21 @@ get_header('shop');
 				<h1 class="page-title"><?php woocommerce_page_title(); ?></h1>
 			<?php endif; ?>
 		</div>
+		
 		<div class="catalog__head-filter">
 			<p class="woocommerce-result-count">
 				<?php
-				$total = wc_get_loop_prop('total');
-				$per_page = wc_get_loop_prop('per_page');
-				$current = wc_get_loop_prop('current_page');
+					$total = wc_get_loop_prop('total');
+					$per_page = wc_get_loop_prop('per_page');
+					$current = wc_get_loop_prop('current_page');
 
-				if ($total <= $per_page || -1 === $per_page) {
-					printf(_n('Showing all %d result', 'Showing all %d results', $total, 'kerning-geoshop'), $total);
-				} else {
-					$first = ($per_page * $current) - $per_page + 1;
-					$last = min($total, $per_page * $current);
-					printf(_nx('Showing %1$d&ndash;%2$d of %3$d result', 'Showing %1$d&ndash;%2$d of %3$d results', $total, 'with first and last result', 'kerning-geoshop'), $first, $last, $total);
-				}
+					if ($total <= $per_page || -1 === $per_page) {
+						printf(_n('Showing all %d result', 'Showing all %d results', $total, 'kerning-geoshop'), $total);
+					} else {
+						$first = ($per_page * $current) - $per_page + 1;
+						$last = min($total, $per_page * $current);
+						printf(_nx('Showing %1$d&ndash;%2$d of %3$d result', 'Showing %1$d&ndash;%2$d of %3$d results', $total, 'with first and last result', 'kerning-geoshop'), $first, $last, $total);
+					}
 				?>
 			</p>
 			<form class="woocommerce-ordering" method="get">

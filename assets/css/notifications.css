@@ -1,0 +1,113 @@
+/**
+ * Product Notifications
+ */
+.product-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 320px;
+    max-width: 400px;
+    z-index: 99999;
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all 0.3s ease;
+}
+
+.product-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.product-notification.notification-success {
+    border-left: 4px solid #10b981;
+}
+
+.product-notification.notification-success .notification-icon {
+    color: #10b981;
+}
+
+.product-notification.notification-error {
+    border-left: 4px solid #ef4444;
+}
+
+.product-notification.notification-error .notification-icon {
+    color: #ef4444;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.notification-icon {
+    flex-shrink: 0;
+}
+
+.notification-message {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+
+.notification-close:hover {
+    color: #1f2937;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .product-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        max-width: none;
+        transform: translateY(-100px);
+    }
+
+    .product-notification.show {
+        transform: translateY(0);
+    }
+}
+
+/**
+ * Disabled button states for single product
+ */
+.single_add_to_cart_button:disabled,
+.buy-now-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
+.single_add_to_cart_button:disabled:hover,
+.buy-now-button:disabled:hover {
+    transform: none !important;
+    background: inherit !important;
+}
