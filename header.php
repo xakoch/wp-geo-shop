@@ -65,7 +65,36 @@ if (!defined('ABSPATH')) exit;
             <!-- middle -->
             <div class="header__middle">
                 <ul class="header__menu">
-                    <li><a href="/categories">Products</a></li>
+                    <li class="menu-item-has-dropdown">
+                        <a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>" class="menu-dropdown-toggle">
+                            <?php _e('Products', 'kerning-geoshop'); ?>
+                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 6L0.669873 0.75L9.33013 0.75L5 6Z" fill="currentColor"/>
+                            </svg>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <?php
+                            $product_categories = get_terms(array(
+                                'taxonomy' => 'product_cat',
+                                'hide_empty' => true,
+                                'parent' => 0, // Только родительские категории
+                                'order' => 'DESC'
+                            ));
+
+                            if (!empty($product_categories) && !is_wp_error($product_categories)) :
+                                foreach ($product_categories as $category) :
+                                    $category_link = get_term_link($category);
+                                    ?>
+                                    <li>
+                                        <a href="<?php echo esc_url($category_link); ?>">
+                                            <?php echo esc_html($category->name); ?>
+                                            <span class="category-count">(<?php echo $category->count; ?>)</span>
+                                        </a>
+                                    </li>
+                                <?php endforeach;
+                            endif; ?>
+                        </ul>
+                    </li>
                     <li><a href="#contact"><?php _e('Contact', 'kerning-geoshop'); ?></a></li>
                 </ul>
                 <button class="burger">

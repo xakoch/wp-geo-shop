@@ -103,7 +103,13 @@ do_action('woocommerce_before_mini_cart'); ?>
 
 <?php else : ?>
 
-	<p class="woocommerce-mini-cart__empty-message"><?php _e('The basket is empty', 'kerning-geoshop'); ?></p>
+	<div class="woocommerce-mini-cart__empty-message">
+		<svg class="empty-cart-icon" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M20 16L24 8H40L44 16M20 16H8L12 48H52L56 16H44M20 16H44M28 24V40M36 24V40" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>
+		<p class="empty-cart-text"><?php _e('The basket is empty', 'kerning-geoshop'); ?></p>
+		<p class="empty-cart-subtext"><?php _e('Add products to get started', 'kerning-geoshop'); ?></p>
+	</div>
 
 <?php endif; ?>
 

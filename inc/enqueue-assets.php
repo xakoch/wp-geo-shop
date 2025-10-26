@@ -31,8 +31,16 @@ function customshop_scripts() {
     $notifications_version = filemtime(get_template_directory() . '/assets/css/notifications.css');
     wp_enqueue_style('customshop-notifications', get_template_directory_uri() . '/assets/css/notifications.css', array('customshop-main'), $notifications_version);
 
-    // Подключаем стили checkout страницы
-    if (is_checkout()) {
+    // Подключаем стили мини-корзины
+    $minicart_version = filemtime(get_template_directory() . '/assets/css/mini-cart.css');
+    wp_enqueue_style('customshop-mini-cart', get_template_directory_uri() . '/assets/css/mini-cart.css', array('customshop-main'), $minicart_version);
+
+    // Подключаем стили header dropdown
+    $header_dropdown_version = filemtime(get_template_directory() . '/assets/css/header-dropdown.css');
+    wp_enqueue_style('customshop-header-dropdown', get_template_directory_uri() . '/assets/css/header-dropdown.css', array('customshop-main'), $header_dropdown_version);
+
+    // Подключаем стили checkout и cart страниц
+    if (is_checkout() || is_cart()) {
         $checkout_version = filemtime(get_template_directory() . '/assets/css/checkout.css');
         wp_enqueue_style('customshop-checkout', get_template_directory_uri() . '/assets/css/checkout.css', array('customshop-main'), $checkout_version);
     }
@@ -44,6 +52,10 @@ function customshop_scripts() {
     wp_enqueue_script('customshop-lib', get_template_directory_uri() . '/assets/js/lib.min.js', array('jquery'), $lib_version, true);
     wp_enqueue_script('customshop-app', get_template_directory_uri() . '/assets/js/app.min.js', array('jquery', 'customshop-lib'), $app_version, true);
     wp_enqueue_script('customshop-add', get_template_directory_uri() . '/assets/js/add.min.js', array('jquery', 'customshop-app'), $add_version, true);
+
+    // Header dropdown
+    $header_dropdown_js_version = filemtime(get_template_directory() . '/assets/js/header-dropdown.js');
+    wp_enqueue_script('customshop-header-dropdown', get_template_directory_uri() . '/assets/js/header-dropdown.js', array('jquery'), $header_dropdown_js_version, true);
 
     // Подключаем скрипт для single product page
     if (is_product()) {

@@ -1,0 +1,52 @@
+/**
+ * Mini Cart Styles - Empty State
+ *
+ * @package kerning-geoshop
+ */
+
+/* Empty Cart Message Styling */
+.woocommerce-mini-cart__empty-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    min-height: 300px;
+}
+
+.empty-cart-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 24px;
+    opacity: 0.5;
+}
+
+.empty-cart-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 8px 0;
+}
+
+.empty-cart-subtext {
+    font-size: 14px;
+    color: #6B7280;
+    margin: 0;
+}
+
+/* Animation for empty cart */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.woocommerce-mini-cart__empty-message {
+    animation: fadeInUp 0.5s ease-out;
+}

@@ -4,6 +4,14 @@
  * @package kerning-geoshop
  */
 
+/* ==================== HEADER SPACING ==================== */
+
+/* Add extra margin to header on checkout and cart pages */
+.woocommerce-checkout .header,
+.woocommerce-cart .header {
+    margin-bottom: 120px;
+}
+
 /* ==================== CHECKOUT PAGE ==================== */
 
 .checkout-page {
