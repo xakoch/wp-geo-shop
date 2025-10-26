@@ -31,6 +31,12 @@ function customshop_scripts() {
     $notifications_version = filemtime(get_template_directory() . '/assets/css/notifications.css');
     wp_enqueue_style('customshop-notifications', get_template_directory_uri() . '/assets/css/notifications.css', array('customshop-main'), $notifications_version);
 
+    // Подключаем стили checkout страницы
+    if (is_checkout()) {
+        $checkout_version = filemtime(get_template_directory() . '/assets/css/checkout.css');
+        wp_enqueue_style('customshop-checkout', get_template_directory_uri() . '/assets/css/checkout.css', array('customshop-main'), $checkout_version);
+    }
+
     // jQuery (уже включен в WordPress)
     wp_enqueue_script('jquery');
 

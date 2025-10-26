@@ -19,6 +19,18 @@ get_header('shop');
                 the_post();
                 wc_get_template_part('content', 'single-product');
             }
+        } elseif (is_checkout()) {
+            // Страница Checkout - используется woocommerce/checkout/form-checkout.php
+            while (have_posts()) {
+                the_post();
+                the_content(); // Вызывает шорткод [woocommerce_checkout], который загружает form-checkout.php
+            }
+        } elseif (is_cart()) {
+            // Страница Корзины
+            while (have_posts()) {
+                the_post();
+                the_content(); // Вызывает шорткод [woocommerce_cart]
+            }
         } else {
     // Категория / Магазин / Архив
     ?>

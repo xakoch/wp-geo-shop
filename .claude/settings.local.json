@@ -3,7 +3,8 @@
     "allow": [
       "Bash(git add:*)",
       "Read(//c/Users/User/Local Sites/geoshop/app/public/wp-content/plugins/woocommerce/templates/loop/**)",
-      "Read(//c/Users/User/Local Sites/geoshop/app/public/wp-content/plugins/woocommerce/includes/**)"
+      "Read(//c/Users/User/Local Sites/geoshop/app/public/wp-content/plugins/woocommerce/includes/**)",
+      "Read(//c/Users/User/Local Sites/geoshop/app/public/**)"
     ],
     "deny": [],
     "ask": []

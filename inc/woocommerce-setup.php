@@ -24,6 +24,20 @@ add_action('after_setup_theme', 'customshop_woocommerce_setup');
 add_filter('woocommerce_enqueue_styles', '__return_empty_array');
 
 /**
+ * Force woocommerce.php template for all WooCommerce pages
+ */
+function customshop_woocommerce_template($template) {
+    if (is_woocommerce() || is_cart() || is_checkout() || is_account_page()) {
+        $woocommerce_template = locate_template('woocommerce.php');
+        if ($woocommerce_template) {
+            return $woocommerce_template;
+        }
+    }
+    return $template;
+}
+add_filter('template_include', 'customshop_woocommerce_template', 99);
+
+/**
  * Ensure WooCommerce session is started for AJAX requests
  */
 function customshop_init_woocommerce_session() {
