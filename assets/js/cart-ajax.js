@@ -137,13 +137,21 @@
                 if (response.success) {
                     const data = response.data;
 
+                    // Показываем уведомление об успехе
+                    showNotification('Item removed from cart', 'success');
+
                     // Анимация удаления товара
                     $cartItem.slideUp(300, function() {
                         $(this).remove();
 
-                        // Если корзина пуста, перезагружаем страницу
+                        // Если корзина пуста, перезагружаем страницу для показа cart-empty
                         if (data.cart_is_empty) {
-                            location.reload();
+                            setTimeout(() => {
+                                location.reload();
+                            }, 300);
+                        } else {
+                            // Обновляем totals без перезагрузки
+                            updateCartTotals();
                         }
                     });
 
@@ -154,28 +162,37 @@
                         });
                     }
 
-                    // Обновляем общую сумму корзины
-                    if (!data.cart_is_empty) {
-                        // Триггерим событие обновления корзины для пересчета totals
-                        $(document.body).trigger('updated_cart_totals');
-                        $(document.body).trigger('wc_fragment_refresh');
-
-                        // Перезагружаем для корректного обновления totals
-                        setTimeout(() => {
-                            location.reload();
-                        }, 500);
-                    }
-
-                    // Показываем уведомление об успехе
-                    showNotification('Item removed from cart', 'success');
+                    // Триггерим событие обновления корзины
+                    $(document.body).trigger('updated_cart_totals');
+                    $(document.body).trigger('wc_fragment_refresh');
                 } else {
                     $cartItem.removeClass('removing');
                     showNotification(response.data.message || 'Error removing item', 'error');
                 }
             },
-            error: function() {
+            error: function(xhr, status, error) {
+                console.error('Remove cart item error:', error);
                 $cartItem.removeClass('removing');
                 showNotification('Error removing item from cart', 'error');
+            }
+        });
+    }
+
+    // Обновление totals корзины через AJAX
+    function updateCartTotals() {
+        $.ajax({
+            type: 'POST',
+            url: wc_add_to_cart_params.ajax_url,
+            data: {
+                action: 'woocommerce_get_refreshed_fragments'
+            },
+            success: function(response) {
+                if (response && response.fragments) {
+                    // Обновляем cart totals
+                    $.each(response.fragments, function(key, value) {
+                        $(key).replaceWith(value);
+                    });
+                }
             }
         });
     }
@@ -222,13 +239,16 @@
             const cartItemKey = $quantityWrapper.data('cart-item-key');
 
             let currentVal = parseInt($input.val()) || 1;
-            const max = parseInt($input.attr('max')) || 9999;
+            let maxAttr = parseInt($input.attr('max'));
             const min = parseInt($input.attr('min')) || 1;
+
+            // В WooCommerce, max = -1 означает неограниченное количество
+            const max = (maxAttr && maxAttr > 0) ? maxAttr : 9999;
             let newVal = currentVal;
 
             if ($button.hasClass('plus')) {
                 newVal = currentVal + 1;
-                if (newVal > max) {
+                if (max !== 9999 && newVal > max) {
                     showNotification('Maximum quantity reached', 'warning');
                     return;
                 }
@@ -253,11 +273,14 @@
             const cartItemKey = $input.data('cart-item-key');
             let newVal = parseInt($input.val()) || 1;
             const min = parseInt($input.attr('min')) || 1;
-            const max = parseInt($input.attr('max')) || 9999;
+            let maxAttr = parseInt($input.attr('max'));
+
+            // В WooCommerce, max = -1 означает неограниченное количество
+            const max = (maxAttr && maxAttr > 0) ? maxAttr : 9999;
 
             // Проверяем границы
             if (newVal < min) newVal = min;
-            if (newVal > max) newVal = max;
+            if (max !== 9999 && newVal > max) newVal = max;
 
             // Обновляем значение если оно было скорректировано
             if (newVal !== parseInt($input.val())) {
