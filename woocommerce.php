@@ -27,9 +27,12 @@ get_header('shop');
             }
         } elseif (is_cart()) {
             // Страница Корзины
-            while (have_posts()) {
-                the_post();
-                the_content(); // Вызывает шорткод [woocommerce_cart]
+            if (WC()->cart->is_empty()) {
+                // Если корзина пуста
+                wc_get_template('cart/cart-empty.php');
+            } else {
+                // Если есть товары - используем наш шаблон
+                wc_get_template('cart/cart.php');
             }
         } else {
     // Категория / Магазин / Архив
