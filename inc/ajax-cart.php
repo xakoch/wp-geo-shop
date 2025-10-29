@@ -196,30 +196,77 @@ function customshop_mini_cart_fragments($fragments) {
 }
 
 /**
+ * AJAX handler to update cart item quantity
+ */
+add_action('wp_ajax_update_cart_item_qty', 'customshop_ajax_update_cart_item_qty');
+add_action('wp_ajax_nopriv_update_cart_item_qty', 'customshop_ajax_update_cart_item_qty');
+
+function customshop_ajax_update_cart_item_qty() {
+    if (!isset($_POST['cart_item_key']) || !isset($_POST['quantity'])) {
+        wp_send_json_error(array('message' => 'Missing required parameters'));
+        wp_die();
+    }
+
+    $cart_item_key = sanitize_text_field($_POST['cart_item_key']);
+    $quantity = absint($_POST['quantity']);
+
+    if ($quantity <= 0) {
+        wp_send_json_error(array('message' => 'Invalid quantity'));
+        wp_die();
+    }
+
+    // Update cart item quantity
+    $updated = WC()->cart->set_quantity($cart_item_key, $quantity, true);
+
+    if ($updated) {
+        WC()->cart->calculate_totals();
+
+        // Get updated cart data
+        $cart_item = WC()->cart->get_cart_item($cart_item_key);
+        $product = $cart_item['data'];
+
+        // Get fragments
+        ob_start();
+        woocommerce_mini_cart();
+        $mini_cart = ob_get_clean();
+
+        $data = array(
+            'cart_item_key' => $cart_item_key,
+            'quantity' => $quantity,
+            'line_total' => WC()->cart->get_product_subtotal($product, $quantity),
+            'cart_subtotal' => WC()->cart->get_cart_subtotal(),
+            'cart_total' => WC()->cart->get_total(),
+            'fragments' => apply_filters('woocommerce_add_to_cart_fragments', array(
+                'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
+                'span.cart-count' => '<span class="cart-count">' . WC()->cart->get_cart_contents_count() . '</span>',
+            )),
+            'cart_hash' => WC()->cart->get_cart_hash()
+        );
+
+        wp_send_json_success($data);
+    } else {
+        wp_send_json_error(array('message' => 'Failed to update cart'));
+    }
+
+    wp_die();
+}
+
+/**
  * AJAX handler to remove item from cart
  */
 add_action('wp_ajax_remove_cart_item', 'customshop_ajax_remove_cart_item');
 add_action('wp_ajax_nopriv_remove_cart_item', 'customshop_ajax_remove_cart_item');
 
 function customshop_ajax_remove_cart_item() {
-    if (!isset($_POST['product_id'])) {
-        wp_send_json_error(array('message' => 'Missing product_id'));
+    if (!isset($_POST['cart_item_key'])) {
+        wp_send_json_error(array('message' => 'Missing cart_item_key'));
         wp_die();
     }
 
-    $product_id = absint($_POST['product_id']);
-    $cart = WC()->cart->get_cart();
-    $removed = false;
+    $cart_item_key = sanitize_text_field($_POST['cart_item_key']);
 
-    foreach ($cart as $cart_item_key => $cart_item) {
-        // Check both product_id and variation_id (in case it's a variation)
-        if ($cart_item['product_id'] == $product_id ||
-            (isset($cart_item['variation_id']) && $cart_item['variation_id'] == $product_id)) {
-            WC()->cart->remove_cart_item($cart_item_key);
-            $removed = true;
-            break;
-        }
-    }
+    // Remove item from cart
+    $removed = WC()->cart->remove_cart_item($cart_item_key);
 
     if ($removed) {
         WC()->cart->calculate_totals();
@@ -232,13 +279,15 @@ function customshop_ajax_remove_cart_item() {
         $data = array(
             'fragments' => apply_filters('woocommerce_add_to_cart_fragments', array(
                 'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
+                'span.cart-count' => '<span class="cart-count">' . WC()->cart->get_cart_contents_count() . '</span>',
             )),
-            'cart_hash' => WC()->cart->get_cart_hash()
+            'cart_hash' => WC()->cart->get_cart_hash(),
+            'cart_is_empty' => WC()->cart->is_empty()
         );
 
         wp_send_json_success($data);
     } else {
-        wp_send_json_error(array('message' => 'Product not found in cart'));
+        wp_send_json_error(array('message' => 'Failed to remove item from cart'));
     }
 
     wp_die();

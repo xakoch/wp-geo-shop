@@ -41,7 +41,7 @@ do_action('woocommerce_before_cart');
                             $thumbnail = apply_filters('woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key);
                             ?>
                             <!-- Товар -->
-                            <div class="cart-item woocommerce-cart-form__cart-item">
+                            <div class="cart-item woocommerce-cart-form__cart-item" data-cart-item-key="<?php echo esc_attr($cart_item_key); ?>">
                                 <!-- Колонка 1: Фото -->
                                 <div class="cart-item__image">
                                     <?php
@@ -113,18 +113,19 @@ do_action('woocommerce_before_cart');
                                         $cart_item_key
                                     );
                                     ?>
-                                    <div class="cart-item__quantity">
-                                        <button type="button" class="qty-btn minus">−</button>
-                                        <input type="number" 
-                                               name="cart[<?php echo $cart_item_key; ?>][qty]" 
-                                               value="<?php echo $cart_item['quantity']; ?>" 
-                                               min="1" 
+                                    <div class="cart-item__quantity" data-cart-item-key="<?php echo esc_attr($cart_item_key); ?>">
+                                        <button type="button" class="qty-btn minus" data-action="minus">−</button>
+                                        <input type="number"
+                                               name="cart[<?php echo $cart_item_key; ?>][qty]"
+                                               value="<?php echo $cart_item['quantity']; ?>"
+                                               min="1"
                                                max="<?php echo $_product->get_max_purchase_quantity(); ?>"
                                                step="1"
-                                               class="qty input-text qty-input" 
-                                               inputmode="numeric" 
-                                               autocomplete="off" />
-                                        <button type="button" class="qty-btn plus">+</button>
+                                               class="qty input-text qty-input"
+                                               inputmode="numeric"
+                                               autocomplete="off"
+                                               data-cart-item-key="<?php echo esc_attr($cart_item_key); ?>" />
+                                        <button type="button" class="qty-btn plus" data-action="plus">+</button>
                                     </div>
                                 </div>
                             </div>
@@ -170,5 +171,27 @@ do_action('woocommerce_before_cart');
         </form>
     </div>
 </section>
+
+<!-- Delete Confirmation Modal -->
+<div id="cart-delete-modal" class="cart-modal" style="display: none;">
+    <div class="cart-modal__overlay"></div>
+    <div class="cart-modal__content">
+        <div class="cart-modal__header">
+            <h3 class="cart-modal__title">Remove Item</h3>
+            <button type="button" class="cart-modal__close" aria-label="Close">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+        <div class="cart-modal__body">
+            <p>Are you sure you want to remove this item from your cart?</p>
+        </div>
+        <div class="cart-modal__footer">
+            <button type="button" class="btn btn--secondary cart-modal__cancel">Cancel</button>
+            <button type="button" class="btn btn--danger cart-modal__confirm">Remove</button>
+        </div>
+    </div>
+</div>
 
 <?php do_action('woocommerce_after_cart'); ?>
