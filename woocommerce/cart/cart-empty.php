@@ -33,3 +33,5 @@ do_action('woocommerce_cart_is_empty');
         </p>
     </div>
 </section>
+
+<?php // Failed to remove item from cart ?>
