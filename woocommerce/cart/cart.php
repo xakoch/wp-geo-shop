@@ -113,19 +113,17 @@ do_action('woocommerce_before_cart');
                                         $cart_item_key
                                     );
                                     ?>
-                                    <div class="cart-item__quantity" data-cart-item-key="<?php echo esc_attr($cart_item_key); ?>">
-                                        <button type="button" class="qty-btn minus" data-action="minus">−</button>
-                                        <input type="number"
+                                    <div class="cart-item__quantity"
+                                         data-cart-item-key="<?php echo esc_attr($cart_item_key); ?>"
+                                         data-min="1"
+                                         data-max="<?php echo $_product->get_max_purchase_quantity(); ?>">
+                                        <button type="button" class="qty-btn qty-btn--minus">−</button>
+                                        <span class="qty-display"><?php echo $cart_item['quantity']; ?></span>
+                                        <input type="hidden"
                                                name="cart[<?php echo $cart_item_key; ?>][qty]"
                                                value="<?php echo $cart_item['quantity']; ?>"
-                                               min="1"
-                                               max="<?php echo $_product->get_max_purchase_quantity(); ?>"
-                                               step="1"
-                                               class="qty input-text qty-input"
-                                               inputmode="numeric"
-                                               autocomplete="off"
-                                               data-cart-item-key="<?php echo esc_attr($cart_item_key); ?>" />
-                                        <button type="button" class="qty-btn plus" data-action="plus">+</button>
+                                               class="qty-value" />
+                                        <button type="button" class="qty-btn qty-btn--plus">+</button>
                                     </div>
                                 </div>
                             </div>

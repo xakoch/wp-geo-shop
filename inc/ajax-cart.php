@@ -258,15 +258,39 @@ add_action('wp_ajax_remove_cart_item', 'customshop_ajax_remove_cart_item');
 add_action('wp_ajax_nopriv_remove_cart_item', 'customshop_ajax_remove_cart_item');
 
 function customshop_ajax_remove_cart_item() {
+    // Debug logging
+    error_log('========== REMOVE CART ITEM DEBUG ==========');
+    error_log('POST data: ' . print_r($_POST, true));
+
     if (!isset($_POST['cart_item_key'])) {
+        error_log('ERROR: cart_item_key not set');
         wp_send_json_error(array('message' => 'Missing cart_item_key'));
-        wp_die();
+        return;
     }
 
     $cart_item_key = sanitize_text_field($_POST['cart_item_key']);
+    error_log('Cart item key: ' . $cart_item_key);
+
+    // Check if WooCommerce cart is available
+    if (!WC()->cart) {
+        error_log('ERROR: WC()->cart not available');
+        wp_send_json_error(array('message' => 'Cart not available'));
+        return;
+    }
+
+    // Check if item exists in cart
+    $cart_contents = WC()->cart->get_cart();
+    error_log('Cart contents keys: ' . print_r(array_keys($cart_contents), true));
+
+    if (!isset($cart_contents[$cart_item_key])) {
+        error_log('ERROR: Item not found in cart');
+        wp_send_json_error(array('message' => 'Item not found in cart'));
+        return;
+    }
 
     // Remove item from cart
     $removed = WC()->cart->remove_cart_item($cart_item_key);
+    error_log('Removed: ' . ($removed ? 'YES' : 'NO'));
 
     if ($removed) {
         WC()->cart->calculate_totals();
@@ -285,10 +309,12 @@ function customshop_ajax_remove_cart_item() {
             'cart_is_empty' => WC()->cart->is_empty()
         );
 
+        error_log('Success! Cart is empty: ' . ($data['cart_is_empty'] ? 'YES' : 'NO'));
+        error_log('===========================================');
         wp_send_json_success($data);
     } else {
+        error_log('ERROR: Failed to remove item');
+        error_log('===========================================');
         wp_send_json_error(array('message' => 'Failed to remove item from cart'));
     }
-
-    wp_die();
 }
