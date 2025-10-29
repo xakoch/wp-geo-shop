@@ -1,0 +1,274 @@
+/**
+ * Cart Modal & Notifications Styles
+ */
+
+/* ===========================
+   Modal Styles
+   =========================== */
+
+.cart-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-modal__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+}
+
+.cart-modal__content {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 480px;
+    width: 90%;
+    margin: 20px;
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.2s ease;
+}
+
+.cart-modal__content--active {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.cart-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.cart-modal__title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.cart-modal__close {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-modal__close:hover {
+    background: #f5f5f5;
+    color: #1a1a1a;
+}
+
+.cart-modal__body {
+    padding: 24px;
+}
+
+.cart-modal__body p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #4a4a4a;
+}
+
+.cart-modal__footer {
+    display: flex;
+    gap: 12px;
+    padding: 16px 24px 24px;
+}
+
+.cart-modal__footer .btn {
+    flex: 1;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-modal__cancel {
+    background: #f5f5f5;
+    color: #1a1a1a;
+}
+
+.cart-modal__cancel:hover {
+    background: #e5e5e5;
+}
+
+.cart-modal__confirm {
+    background: #f52222;
+    color: #fff;
+}
+
+.cart-modal__confirm:hover {
+    background: #d91d1d;
+}
+
+.btn--danger {
+    background: #f52222;
+    color: #fff;
+}
+
+.btn--danger:hover {
+    background: #d91d1d;
+}
+
+.btn--secondary {
+    background: #f5f5f5;
+    color: #1a1a1a;
+}
+
+.btn--secondary:hover {
+    background: #e5e5e5;
+}
+
+/* ===========================
+   Notification Styles
+   =========================== */
+
+.cart-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 15px;
+    font-weight: 500;
+    z-index: 10000;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    max-width: 320px;
+}
+
+.cart-notification--show {
+    transform: translateX(0);
+}
+
+.cart-notification--success {
+    background: #10b981;
+    color: #fff;
+}
+
+.cart-notification--error {
+    background: #ef4444;
+    color: #fff;
+}
+
+.cart-notification--warning {
+    background: #f59e0b;
+    color: #fff;
+}
+
+.cart-notification--info {
+    background: #3b82f6;
+    color: #fff;
+}
+
+/* ===========================
+   Loading States
+   =========================== */
+
+.cart-item__quantity.updating {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.cart-item__quantity.updating::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #e5e5e5;
+    border-top-color: #1a1a1a;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+.cart-item.removing {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* ===========================
+   Animations
+   =========================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===========================
+   Responsive
+   =========================== */
+
+@media (max-width: 768px) {
+    .cart-modal__content {
+        width: 95%;
+        margin: 10px;
+    }
+
+    .cart-modal__header {
+        padding: 20px 20px 12px;
+    }
+
+    .cart-modal__title {
+        font-size: 18px;
+    }
+
+    .cart-modal__body {
+        padding: 20px;
+    }
+
+    .cart-modal__footer {
+        padding: 12px 20px 20px;
+        flex-direction: column;
+    }
+
+    .cart-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}
