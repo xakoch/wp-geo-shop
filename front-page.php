@@ -20,8 +20,57 @@ get_header();
         <?php else : ?>
             <img src="<?php echo get_template_directory_uri(); ?>/assets/img/banner.png" alt="<?php bloginfo('name'); ?>">
         <?php endif; ?>
+        <div class="hero__title">
+            <h1>Professional Diving Equipment</h1>
+        </div>
     </div>
-    <div class="hero__slider"></div>
+    <div class="hero__slider">
+        <div class="swiper heroSlider">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="hero__slider--item">
+                        <div class="hero__slider--top">
+                            <div class="hero__slider--img">
+                                <img src="<?= get_template_directory_uri(); ?>/assets/img/item-1.png" alt="">
+                            </div>
+                        </div>
+                        <div class="hero__slider--bottom">
+                            <div class="hero__slider--title">
+                                <h3>Hauberk Karacena drysuit</h3>
+                            </div>
+                            <div class="hero__slider--text">
+                                <p>Trenerim ir bagāta un daudzpusīga pieredze, nirstot dažādās pasaules valstīs, tāpēc paralēli teorētiskajai un praktiskajai apmācībai, varēsi uzzināt arī interesantus un noderīgus pieredzes stāstus par niršanu un zemūdens pasauli. Ja Tev ir velme redzēt pasakaino zemūdens pasauli – Geo Sidemont Diving profesionāļi Tevi sagatavos šim skaistajam ceļojumam.</p>
+                            </div>
+                            <div class="hero__slider--btn">
+                                <a href="#" class="btn btn--secondary">Learn more</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="hero__slider--item">
+                        <div class="hero__slider--top">
+                            <div class="hero__slider--img">
+                                <img src="<?= get_template_directory_uri(); ?>/assets/img/item-1.png" alt="">
+                            </div>
+                        </div>
+                        <div class="hero__slider--bottom">
+                            <div class="hero__slider--title">
+                                <h3>Hauberk Karacena drysuit</h3>
+                            </div>
+                            <div class="hero__slider--text">
+                                <p>Trenerim ir bagāta un daudzpusīga pieredze, nirstot dažādās pasaules valstīs, tāpēc paralēli teorētiskajai un praktiskajai apmācībai, varēsi uzzināt arī interesantus un noderīgus pieredzes stāstus par niršanu un zemūdens pasauli. Ja Tev ir velme redzēt pasakaino zemūdens pasauli – Geo Sidemont Diving profesionāļi Tevi sagatavos šim skaistajam ceļojumam.</p>
+                            </div>
+                            <div class="hero__slider--btn">
+                                <a href="#" class="btn btn--secondary">Learn more</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
 </section>
 
 <section class="about">
