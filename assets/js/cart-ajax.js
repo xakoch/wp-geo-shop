@@ -289,14 +289,22 @@
             e.preventDefault();
 
             const $link = $(this);
-            const cartItemKey = $link.data('cart_item_key');
 
-            console.log('Remove button clicked, cart_item_key:', cartItemKey);
+            // Пробуем разные способы получить cart_item_key
+            let cartItemKey = $link.data('cart_item_key') || $link.attr('data-cart-item-key');
+
+            console.log('Remove button clicked');
+            console.log('Link element:', $link[0]);
+            console.log('data-cart_item_key (jQuery .data()):', $link.data('cart_item_key'));
+            console.log('data-cart-item-key (attr):', $link.attr('data-cart-item-key'));
+            console.log('All data attributes:', $link[0].dataset);
+            console.log('Final cartItemKey:', cartItemKey);
 
             if (cartItemKey) {
                 // Открываем модальное окно для подтверждения
                 CartModal.open(cartItemKey);
             } else {
+                console.error('ERROR: Cart item key not found!');
                 showNotification('Error: Cart item key not found', 'error');
             }
         });

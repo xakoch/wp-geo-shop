@@ -101,18 +101,16 @@ do_action('woocommerce_before_cart');
 
                                 <!-- Колонка 3: Действия -->
                                 <div class="cart-item__actions">
-                                    <?php
-                                    echo apply_filters(
-                                        'woocommerce_cart_item_remove_link',
-                                        sprintf(
-                                            '<a href="%s" class="cart-item__remove remove_from_cart_button ajax_remove_from_cart" aria-label="Remove this item" data-product_id="%s" data-cart_item_key="%s"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 4H13V14C13 14.2652 12.8946 14.5195 12.707 14.707C12.5195 14.8946 12.2652 15 12 15H4C3.73478 15 3.48051 14.8946 3.29297 14.707C3.10543 14.5195 3 14.2652 3 14V4H2V3H14V4ZM4 14H12V4H4V14ZM7 12H6V6H7V12ZM10 12H9V6H10V12ZM10 1V2H6V1H10Z" fill="#F52222"/></svg>Remove</a>',
-                                            esc_url(wc_get_cart_remove_url($cart_item_key)),
-                                            esc_attr($product_id),
-                                            esc_attr($cart_item_key)
-                                        ),
-                                        $cart_item_key
-                                    );
-                                    ?>
+                                    <a href="<?php echo esc_url(wc_get_cart_remove_url($cart_item_key)); ?>"
+                                       class="cart-item__remove remove_from_cart_button ajax_remove_from_cart"
+                                       aria-label="Remove this item"
+                                       data-product_id="<?php echo esc_attr($product_id); ?>"
+                                       data-cart-item-key="<?php echo esc_attr($cart_item_key); ?>">
+                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M14 4H13V14C13 14.2652 12.8946 14.5195 12.707 14.707C12.5195 14.8946 12.2652 15 12 15H4C3.73478 15 3.48051 14.8946 3.29297 14.707C3.10543 14.5195 3 14.2652 3 14V4H2V3H14V4ZM4 14H12V4H4V14ZM7 12H6V6H7V12ZM10 12H9V6H10V12ZM10 1V2H6V1H10Z" fill="#F52222"/>
+                                        </svg>
+                                        Remove
+                                    </a>
                                     <div class="cart-item__quantity"
                                          data-cart-item-key="<?php echo esc_attr($cart_item_key); ?>"
                                          data-min="1"
