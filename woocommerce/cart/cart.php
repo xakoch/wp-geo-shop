@@ -16,6 +16,13 @@ do_action('woocommerce_before_cart');
     </div>
 </section>
 
+<!-- WooCommerce Notices -->
+<?php if (wc_notice_count() > 0) : ?>
+<div class="container">
+    <?php woocommerce_output_all_notices(); ?>
+</div>
+<?php endif; ?>
+
 <section class="cart-page">
     <div class="container">
         <form class="woocommerce-cart-form" action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post">
@@ -68,21 +75,34 @@ do_action('woocommerce_before_cart');
                                         <div class="cart-item__price"><?php echo apply_filters('woocommerce_cart_item_price', WC()->cart->get_product_price($_product), $cart_item, $cart_item_key); ?></div>
                                     </div>
                                     
-                                    <?php if (!empty($cart_item['variation'])) : ?>
+                                    <?php if (!empty($cart_item['variation'])) :
+                                        // Подсчитываем количество атрибутов
+                                        $attributes_count = count(array_filter($cart_item['variation'], function($value) {
+                                            return !empty($value);
+                                        }));
+                                    ?>
                                     <div class="cart-item__meta">
-                                        <?php 
+                                        <?php
+                                        $attr_index = 0;
                                         foreach ($cart_item['variation'] as $attr_key => $attr_value) :
                                             if (empty($attr_value)) continue;
-                                            
+
                                             $taxonomy = str_replace('attribute_', '', $attr_key);
                                             $term = get_term_by('slug', $attr_value, $taxonomy);
                                             $label = wc_attribute_label($taxonomy);
                                             $is_color = (strpos(strtolower($taxonomy), 'color') !== false);
+
+                                            // Добавляем border-bottom для первого атрибута, если всего атрибутов 2
+                                            $style = '';
+                                            if ($attributes_count == 2 && $attr_index == 0) {
+                                                $style = ' style="border-bottom: 1px solid rgba(0,0,0,0.1);"';
+                                            }
+                                            $attr_index++;
                                         ?>
-                                            <div class="cart-item__attribute">
+                                            <div class="cart-item__attribute"<?php echo $style; ?>>
                                                 <span class="cart-item__attribute-label"><?php echo esc_html($label); ?></span>
                                                 <span class="cart-item__attribute-value">
-                                                    <?php if ($is_color && $term) : 
+                                                    <?php if ($is_color && $term) :
                                                         $color = get_term_meta($term->term_id, 'color', true);
                                                         if (empty($color)) {
                                                             $color = customshop_get_color_from_name($term->name);

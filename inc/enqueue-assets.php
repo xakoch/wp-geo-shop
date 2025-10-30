@@ -45,6 +45,12 @@ function customshop_scripts() {
         wp_enqueue_style('customshop-checkout', get_template_directory_uri() . '/assets/css/checkout.css', array('customshop-main'), $checkout_version);
     }
 
+    // Подключаем скрипт для checkout страницы
+    if (is_checkout()) {
+        $checkout_js_version = filemtime(get_template_directory() . '/assets/js/checkout.js');
+        wp_enqueue_script('customshop-checkout-js', get_template_directory_uri() . '/assets/js/checkout.js', array('jquery'), $checkout_js_version, true);
+    }
+
     // jQuery (уже включен в WordPress)
     wp_enqueue_script('jquery');
 

@@ -271,29 +271,31 @@ function customshop_ajax_remove_cart_item() {
     $cart_item_key = sanitize_text_field($_POST['cart_item_key']);
     error_log('Cart item key: ' . $cart_item_key);
 
-    // Check if WooCommerce cart is available
+    // Ensure WooCommerce session and cart are properly initialized
     if (!WC()->cart) {
         error_log('ERROR: WC()->cart not available');
         wp_send_json_error(array('message' => 'Cart not available'));
         return;
     }
 
-    // Check if item exists in cart
+    // Make sure we have the latest cart data from session
+    WC()->cart->get_cart_from_session();
+
+    // Get current cart contents
     $cart_contents = WC()->cart->get_cart();
     error_log('Cart contents keys: ' . print_r(array_keys($cart_contents), true));
 
-    if (!isset($cart_contents[$cart_item_key])) {
-        error_log('ERROR: Item not found in cart');
-        wp_send_json_error(array('message' => 'Item not found in cart'));
-        return;
-    }
-
-    // Remove item from cart
+    // Try to remove item even if not found in current cart state
+    // WooCommerce will handle it gracefully
     $removed = WC()->cart->remove_cart_item($cart_item_key);
     error_log('Removed: ' . ($removed ? 'YES' : 'NO'));
 
     if ($removed) {
+        // Recalculate totals
         WC()->cart->calculate_totals();
+
+        // Persist to session
+        WC()->cart->persistent_cart_update();
 
         // Get fragments manually
         ob_start();
@@ -313,7 +315,7 @@ function customshop_ajax_remove_cart_item() {
         error_log('===========================================');
         wp_send_json_success($data);
     } else {
-        error_log('ERROR: Failed to remove item');
+        error_log('ERROR: Failed to remove item - item may not exist');
         error_log('===========================================');
         wp_send_json_error(array('message' => 'Failed to remove item from cart'));
     }

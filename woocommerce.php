@@ -68,6 +68,13 @@ get_header('shop');
         </div>
     </section>
 
+    <!-- WooCommerce Notices -->
+    <?php if (wc_notice_count() > 0) : ?>
+    <div class="container">
+        <?php woocommerce_output_all_notices(); ?>
+    </div>
+    <?php endif; ?>
+
     <section class="catalog">
         <div class="container">
             <?php

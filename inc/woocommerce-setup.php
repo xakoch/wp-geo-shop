@@ -59,3 +59,18 @@ function customshop_init_woocommerce_session() {
 }
 add_action('init', 'customshop_init_woocommerce_session', 5);
 add_action('wp_loaded', 'customshop_init_woocommerce_session', 5);
+
+/**
+ * Remove default WooCommerce notices output from all hooks
+ */
+function customshop_remove_default_notices() {
+    remove_action('woocommerce_before_main_content', 'woocommerce_output_all_notices', 10);
+    remove_action('woocommerce_before_single_product', 'woocommerce_output_all_notices', 10);
+    remove_action('woocommerce_before_shop_loop', 'woocommerce_output_all_notices', 10);
+    remove_action('woocommerce_before_cart', 'woocommerce_output_all_notices', 10);
+    remove_action('woocommerce_before_checkout_form', 'woocommerce_output_all_notices', 10);
+
+    // Remove coupon form from before checkout form (we'll add it manually)
+    remove_action('woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10);
+}
+add_action('init', 'customshop_remove_default_notices');

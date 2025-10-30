@@ -97,6 +97,39 @@
 }
 
 /**
+ * WooCommerce Notices - минимальные стили
+ */
+.woocommerce-error,
+.woocommerce-message,
+.woocommerce-info {
+    background: #f8f8f8;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid #176DAA;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.woocommerce-error {
+    border-left-color: #e74c3c;
+    background: #fef5f5;
+}
+
+.woocommerce-error li {
+    list-style: none;
+}
+
+.woocommerce-message {
+    border-left-color: #27ae60;
+    background: #f0fdf4;
+}
+
+.woocommerce-info {
+    border-left-color: #176DAA;
+    background: #f0f9ff;
+}
+
+/**
  * Disabled button states for single product
  */
 .single_add_to_cart_button:disabled,

@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) exit;
                     </div>
                 </div>
                 <div class="footer__form">
-                    <?php echo do_shortcode('[contact-form-7 id="contact-form"]'); ?>
+                    <?php echo do_shortcode('[contact-form-7 id="8050aa5" title="Contact form 1"]'); ?>
                 </div>
             </div>
             <div class="footer__copyright">

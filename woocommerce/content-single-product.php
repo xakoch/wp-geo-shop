@@ -21,6 +21,13 @@ $price = $product->get_price_html();
 $sku = $product->get_sku();
 ?>
 
+<!-- WooCommerce Notices -->
+<?php if (wc_notice_count() > 0) : ?>
+<div class="container">
+    <?php woocommerce_output_all_notices(); ?>
+</div>
+<?php endif; ?>
+
 <div class="product">
 	<div class="product-gallery">
 

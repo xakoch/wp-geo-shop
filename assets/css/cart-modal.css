@@ -2,6 +2,23 @@
  * Cart Modal & Notifications Styles
  */
 
+
+#coupon_code {
+    padding: 12px 14px;
+}
+
+.cart-totals__coupon button[type="submit"] {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    background: #176daa;
+    color: #fff;
+    text-align: center;
+    font-family: Manrope, sans-serif;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
 /* ===========================
    Empty Cart Styles
    =========================== */
