@@ -61,6 +61,21 @@ if (!defined('ABSPATH')) exit;
 </div>
 <?php endif; ?>
 
+<!-- Success Modal -->
+<div class="success-modal">
+    <div class="success-modal-overlay"></div>
+    <div class="success-modal-content">
+        <div class="success-modal-icon">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="47" stroke="#176DAA" stroke-width="3"/>
+                <path d="M30 50L42 62L70 34" stroke="#176DAA" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <h3 class="success-modal-title"></h3>
+        <p class="success-modal-message"></p>
+    </div>
+</div>
+
 <?php if (get_option('users_can_register')) : ?>
 <!-- Account Sidebar -->
 <div class="account-sidebar">

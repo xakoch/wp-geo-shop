@@ -8,6 +8,47 @@
 if (!defined('ABSPATH')) exit;
 
 /**
+ * Remove automatic <p> and <br> tags from Contact Form 7
+ */
+add_filter('wpcf7_autop_or_not', '__return_false');
+
+/**
+ * Remove Downloads from WooCommerce account menu
+ */
+function customshop_remove_downloads_from_account_menu($items) {
+    unset($items['downloads']);
+    return $items;
+}
+add_filter('woocommerce_account_menu_items', 'customshop_remove_downloads_from_account_menu');
+
+/**
+ * Redirect to home page after logout
+ */
+function customshop_logout_redirect() {
+    return home_url();
+}
+add_filter('woocommerce_logout_default_redirect_url', 'customshop_logout_redirect');
+
+/**
+ * Disable Select2 on checkout and my-account pages for country/state fields
+ */
+function customshop_disable_select2_on_checkout() {
+    if (is_checkout() || is_account_page()) {
+        wp_dequeue_script('select2');
+        wp_deregister_script('select2');
+        wp_dequeue_style('select2');
+        wp_deregister_style('select2');
+
+        // Also disable WooCommerce's selectWoo (Select2 wrapper)
+        wp_dequeue_script('selectWoo');
+        wp_deregister_script('selectWoo');
+        wp_dequeue_style('select2');
+        wp_deregister_style('select2');
+    }
+}
+add_action('wp_enqueue_scripts', 'customshop_disable_select2_on_checkout', 100);
+
+/**
  * Add WooCommerce support to theme
  */
 function customshop_woocommerce_setup() {

@@ -40,7 +40,7 @@ if ($is_on_sale) {
 
     <div class="product__img">
         <a href="<?php echo esc_url(get_permalink()); ?>">
-            <?php echo woocommerce_get_product_thumbnail(); ?>
+            <?php echo woocommerce_get_product_thumbnail('woocommerce_full_size'); ?>
         </a>
     </div>
 

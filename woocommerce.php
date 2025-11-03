@@ -34,6 +34,12 @@ get_header('shop');
                 // Если есть товары - используем наш шаблон
                 wc_get_template('cart/cart.php');
             }
+        } elseif (is_account_page()) {
+            // Страница My Account
+            while (have_posts()) {
+                the_post();
+                the_content(); // Вызывает шорткод [woocommerce_my_account]
+            }
         } else {
     // Категория / Магазин / Архив
     ?>

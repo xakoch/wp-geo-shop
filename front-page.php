@@ -39,10 +39,10 @@ get_header();
                                 <h3>Hauberk Karacena drysuit</h3>
                             </div>
                             <div class="hero__slider--text">
-                                <p>Trenerim ir bagāta un daudzpusīga pieredze, nirstot dažādās pasaules valstīs, tāpēc paralēli teorētiskajai un praktiskajai apmācībai, varēsi uzzināt arī interesantus un noderīgus pieredzes stāstus par niršanu un zemūdens pasauli. Ja Tev ir velme redzēt pasakaino zemūdens pasauli – Geo Sidemont Diving profesionāļi Tevi sagatavos šim skaistajam ceļojumam.</p>
+                                <p>The most convenient in use, really self-donning drysuit for those who value comfort, reliability and look</p>
                             </div>
                             <div class="hero__slider--btn">
-                                <a href="#" class="btn btn--secondary">Learn more</a>
+                                <a href="https://deeppink-horse-920297.hostingersite.com/product/drysuits/karacena/" class="btn btn--secondary">Learn more</a>
                             </div>
                         </div>
                     </div>
@@ -51,18 +51,18 @@ get_header();
                     <div class="hero__slider--item">
                         <div class="hero__slider--top">
                             <div class="hero__slider--img">
-                                <img src="<?= get_template_directory_uri(); ?>/assets/img/item-1.png" alt="">
+                                <img src="<?= get_template_directory_uri(); ?>/assets/img/item-2.png" alt="">
                             </div>
                         </div>
                         <div class="hero__slider--bottom">
                             <div class="hero__slider--title">
-                                <h3>Hauberk Karacena drysuit</h3>
+                                <h3>Hauberk 100 undergarment</h3>
                             </div>
                             <div class="hero__slider--text">
-                                <p>Trenerim ir bagāta un daudzpusīga pieredze, nirstot dažādās pasaules valstīs, tāpēc paralēli teorētiskajai un praktiskajai apmācībai, varēsi uzzināt arī interesantus un noderīgus pieredzes stāstus par niršanu un zemūdens pasauli. Ja Tev ir velme redzēt pasakaino zemūdens pasauli – Geo Sidemont Diving profesionāļi Tevi sagatavos šim skaistajam ceļojumam.</p>
+                                <p>Supposed to be used in warm waters even for long dives, also as an additional insulation with muli-layer (200 and 400) undergarments in extreme conditions.</p>
                             </div>
                             <div class="hero__slider--btn">
-                                <a href="#" class="btn btn--secondary">Learn more</a>
+                                <a href="https://deeppink-horse-920297.hostingersite.com/product/undergarments/100/" class="btn btn--secondary">Learn more</a>
                             </div>
                         </div>
                     </div>
@@ -77,7 +77,7 @@ get_header();
     <div class="container">
         <div class="about__inner">
             <div class="about__title">
-                <h2><?php echo get_theme_mod('about_title', 'GeoDivingShop'); ?></h2>
+                <!-- <h2><?php echo get_theme_mod('about_title', 'GeoDivingShop'); ?></h2> -->
             </div>
             <div class="about__text">
                 <div class="about__text--1">

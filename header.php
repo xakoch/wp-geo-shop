@@ -97,11 +97,6 @@ if (!defined('ABSPATH')) exit;
                     </li>
                     <li><a href="#contact"><?php _e('Contact', 'kerning-geoshop'); ?></a></li>
                 </ul>
-                <button class="burger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
             </div>
 
             <!-- right -->
@@ -122,6 +117,11 @@ if (!defined('ABSPATH')) exit;
                     <span class="cart-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span>
                 </a>
                 <?php endif; ?>
+				<button class="burger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </header>
@@ -130,22 +130,44 @@ if (!defined('ABSPATH')) exit;
     <!-- Mobile Menu -->
     <div class="mobile-menu">
         <div class="mobile-menu__content">
-            <?php
-            wp_nav_menu(array(
-                'theme_location' => 'mobile',
-                'menu_class'     => 'mobile-menu__menu',
-                'container'      => false,
-                'fallback_cb'    => false,
-            ));
-            ?>
+            <ul class="mobile-menu__menu">
+                <li>
+                    <div class="nav-link-wrap">
+                        <a href="catalog.html">Products</a>
+                    </div>
+                </li>
+                <li>
+                    <div class="nav-link-wrap">
+                        <div class="nav-link-line"></div>
+                        <a href="#">Services
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.2021 11.2002H11.8018V5.18848L3.70703 13.2832L2.71875 12.2949L10.8135 4.2002H4.80176V2.7998H13.2021V11.2002Z" fill="#fff"/></svg>
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="nav-link-wrap">
+                        <div class="nav-link-line"></div>
+                        <a href="#contact">Contact</a>
+                    </div>
+                </li>
+                <li>
+                    <div class="nav-link-wrap">
+                        <div class="nav-link-line"></div>
+                        <a href="#" class="account-link mobile-account-link">Login / Sign up</a>
+                        <div class="nav-link-line"></div>
+                    </div>
+                </li>
+            </ul>
             <div class="mobile-menu__action">
                 <a class="header__call" href="tel:+37123111390">+371 23 111 390</a>
-                <a class="header__cta" href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>"><?php _e('Shop', 'kerning-geoshop'); ?></a>
-                <?php if (function_exists('qtranxf_generateLanguageSelectCode')) : ?>
                 <div class="mobile-menu__lang">
-                    <?php echo qtranxf_generateLanguageSelectCode('text'); ?>
+                    <ul class="language-chooser language-chooser-text qtranxs_language_chooser" id="language-chooser">
+                        <li class="lang-en active"><a href="/en/" title="English (en)" class="qtranxs_text qtranxs_text_en" data-mobile-menu-link="true"><span>EN</span></a></li>
+                        <li class="lang-ru"><a href="/ru/" title="Русский (ru)" class="qtranxs_text qtranxs_text_ru" data-mobile-menu-link="true"><span>RU</span></a></li>
+                        <li class="lang-lv"><a href="/lv/" title="Latviešu (lv)" class="qtranxs_text qtranxs_text_lv" data-mobile-menu-link="true"><span>LV</span></a></li>
+                    </ul>
+                    <div class="qtranxs_widget_end"></div>
                 </div>
-                <?php endif; ?>
             </div>
         </div>
     </div>

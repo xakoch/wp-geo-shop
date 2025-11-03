@@ -1,0 +1,195 @@
+/**
+ * Contact Form 7 Styles for Footer
+ */
+
+.footer__form .wpcf7 {
+    width: 100%;
+}
+
+.footer__form .wpcf7-form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Input fields styling */
+.footer__form .wpcf7-form input[type="text"],
+.footer__form .wpcf7-form input[type="email"],
+.footer__form .wpcf7-form input[type="tel"] {
+    border-bottom: 1px solid #d2d2d2;
+    padding: 0 10px 20px 0;
+    font-size: 20px;
+    margin-top: 40px;
+    font-family: Manrope, sans-serif;
+    font-weight: 500;
+    color: #696969;
+    background: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    outline: none;
+    width: 100%;
+}
+
+@media only screen and (max-width: 991px) {
+    .footer__form .wpcf7-form input[type="text"],
+    .footer__form .wpcf7-form input[type="email"],
+    .footer__form .wpcf7-form input[type="tel"] {
+        font-size: 18px;
+        margin-top: 30px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .footer__form .wpcf7-form input[type="text"],
+    .footer__form .wpcf7-form input[type="email"],
+    .footer__form .wpcf7-form input[type="tel"] {
+        font-size: 16px;
+        margin-top: 25px;
+    }
+}
+
+.footer__form .wpcf7-form input::placeholder {
+    font-size: 20px;
+    font-family: Manrope, sans-serif;
+    font-weight: 500;
+    color: #696969;
+}
+
+@media only screen and (max-width: 991px) {
+    .footer__form .wpcf7-form input::placeholder {
+        font-size: 18px;
+    }
+}
+
+/* First input - no top margin */
+.footer__form .wpcf7-form p:first-of-type input {
+    margin-top: 0;
+}
+
+/* Checkbox styling */
+.footer__form .wpcf7-form .wpcf7-acceptance {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.footer__form label {
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+}
+
+@media only screen and (max-width: 767px) {
+    .footer__form .wpcf7-form .wpcf7-acceptance {
+        align-items: flex-start;
+        margin: 15px 0 30px;
+    }
+}
+
+.footer__form .wpcf7-form .wpcf7-acceptance .wpcf7-list-item {
+    margin: 0;
+}
+
+.footer__form .wpcf7-form .wpcf7-acceptance input[type="checkbox"] {
+    margin: 0;
+    position: relative;
+    top: 2px;
+}
+
+.footer__form .wpcf7-form .wpcf7-acceptance .wpcf7-list-item-label {
+    font-size: 14px;
+    line-height: 125%;
+    color: rgba(0, 0, 0, 0.6);
+    font-family: Manrope, sans-serif;
+    font-weight: 400;
+}
+
+@media only screen and (max-width: 767px) {
+    .footer__form .wpcf7-form .wpcf7-acceptance .wpcf7-list-item-label {
+        font-size: 13px;
+    }
+}
+
+/* Submit button styling */
+.footer__form .wpcf7-form input[type="submit"] {
+    padding: 25px 60px;
+    max-width: fit-content;
+    background: #176daa;
+    color: #fff;
+    font-size: 18px;
+    font-family: Manrope, sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.footer__form .wpcf7-form input[type="submit"]:hover {
+    background: #3ca5ef;
+}
+
+@media only screen and (max-width: 767px) {
+    .footer__form .wpcf7-form input[type="submit"] {
+        padding: 20px 40px;
+        font-size: 16px;
+    }
+}
+
+@media only screen and (max-width: 479px) {
+    .footer__form .wpcf7-form input[type="submit"] {
+        padding: 15px 30px;
+        font-size: 14px;
+    }
+}
+
+/* Remove default CF7 margins */
+.footer__form .wpcf7-form p {
+    margin: 0;
+}
+
+/* Validation messages */
+.footer__form .wpcf7-not-valid-tip {
+    font-size: 12px;
+    color: #f00;
+    margin-top: 5px;
+    display: block;
+}
+
+.footer__form .wpcf7-response-output {
+    margin: 20px 0 0;
+    padding: 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Manrope, sans-serif;
+}
+
+.footer__form .wpcf7-response-output.wpcf7-validation-errors {
+    background: #fef5f5;
+    border-left: 4px solid #f00;
+    color: #f00;
+}
+
+.footer__form .wpcf7-response-output.wpcf7-mail-sent-ok {
+    background: #f0fdf4;
+    border-left: 4px solid #10b981;
+    color: #10b981;
+}
+
+/* Loading spinner */
+.footer__form .wpcf7-spinner {
+    margin-left: 10px;
+}
+
+.wpcf7-form-control-wrap {
+    margin-bottom: 20px
+}
+
+.footer__form .form-label {
+    margin: 0 !important;
+}
+
+.footer__form input {
+    margin-top: 0 !important;
+}

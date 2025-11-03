@@ -23,6 +23,12 @@
    Empty Cart Styles
    =========================== */
 
+/* Hide default WooCommerce empty cart message */
+.wc-empty-cart-message,
+.woocommerce-info.wc-empty-cart-message {
+    display: none !important;
+}
+
 .cart-page--empty {
     min-height: 60vh;
     display: flex;
@@ -132,7 +138,7 @@
 .cart-modal__content {
     position: relative;
     background: #fff;
-    border-radius: 12px;
+    /* border-radius: 12px; */
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     max-width: 480px;
     width: 90%;
@@ -169,7 +175,7 @@
     cursor: pointer;
     color: #666;
     transition: all 0.2s ease;
-    border-radius: 6px;
+    /* border-radius: 6px; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -256,7 +262,7 @@
     top: 20px;
     right: 20px;
     padding: 16px 24px;
-    border-radius: 8px;
+    /* border-radius: 8px; */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     font-size: 15px;
     font-weight: 500;
@@ -299,7 +305,7 @@
     align-items: center;
     gap: 8px;
     background: #f5f5f5;
-    border-radius: 8px;
+    /* border-radius: 8px; */
     padding: 4px;
 }
 
@@ -318,7 +324,6 @@
     border: none;
     background: #fff;
     color: #1a1a1a;
-    border-radius: 6px;
     cursor: pointer;
     font-size: 18px;
     font-weight: 600;
@@ -326,7 +331,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); */
 }
 
 .qty-btn:hover {
@@ -424,5 +429,9 @@
         right: 10px;
         left: 10px;
         max-width: none;
+    }
+
+    .cart-item__attribute {
+        border-bottom: none !important;
     }
 }

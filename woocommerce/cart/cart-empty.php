@@ -16,6 +16,30 @@ do_action('woocommerce_cart_is_empty');
     </div>
 </section>
 
+<style>
+    .btn--primary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        grid-gap: 20px;
+        margin: 0 auto;
+        height: 56px;
+        padding: 16px 24px;
+        border: none;
+        max-width: fit-content;
+        font-size: 16px;
+        font-family: Manrope, sans-serif;
+        font-weight: 500;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all .3s ease;
+        line-height: 100%;
+        text-align: center;
+        background: #176daa;
+        color: #fff;
+    }
+</style>
+
 <section class="cart-page cart-page--empty">
     <div class="container">
         <div class="cart-empty">
@@ -39,7 +63,7 @@ do_action('woocommerce_cart_is_empty');
             <?php do_action('woocommerce_cart_is_empty_actions'); ?>
 
             <div class="cart-empty__actions">
-                <a class="btn btn--primary btn--large" href="<?php echo esc_url(apply_filters('woocommerce_return_to_shop_redirect', wc_get_page_permalink('shop'))); ?>">
+                <a class="btn btn--primary" href="<?php echo esc_url(apply_filters('woocommerce_return_to_shop_redirect', wc_get_page_permalink('shop'))); ?>">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M7 10L3 10M3 10L6 7M3 10L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M10 3H14C15.6569 3 17 4.34315 17 6V14C17 15.6569 15.6569 17 14 17H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>

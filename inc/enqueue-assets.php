@@ -39,6 +39,20 @@ function customshop_scripts() {
     $header_dropdown_version = filemtime(get_template_directory() . '/assets/css/header-dropdown.css');
     wp_enqueue_style('customshop-header-dropdown', get_template_directory_uri() . '/assets/css/header-dropdown.css', array('customshop-main'), $header_dropdown_version);
 
+    // Подключаем стили Contact Form 7
+    $contact_form_version = filemtime(get_template_directory() . '/assets/css/contact-form.css');
+    wp_enqueue_style('customshop-contact-form', get_template_directory_uri() . '/assets/css/contact-form.css', array('customshop-main'), $contact_form_version);
+
+    // Подключаем стили авторизации
+    $auth_css_version = filemtime(get_template_directory() . '/assets/css/auth.css');
+    wp_enqueue_style('customshop-auth', get_template_directory_uri() . '/assets/css/auth.css', array('customshop-main'), $auth_css_version);
+
+    // Подключаем стили single product страницы
+    if (is_product()) {
+        $single_product_version = filemtime(get_template_directory() . '/assets/css/single-product.css');
+        wp_enqueue_style('customshop-single-product', get_template_directory_uri() . '/assets/css/single-product.css', array('customshop-main'), $single_product_version);
+    }
+
     // Подключаем стили checkout и cart страниц
     if (is_checkout() || is_cart()) {
         $checkout_version = filemtime(get_template_directory() . '/assets/css/checkout.css');
@@ -49,6 +63,60 @@ function customshop_scripts() {
     if (is_checkout()) {
         $checkout_js_version = filemtime(get_template_directory() . '/assets/js/checkout.js');
         wp_enqueue_script('customshop-checkout-js', get_template_directory_uri() . '/assets/js/checkout.js', array('jquery'), $checkout_js_version, true);
+
+        // Добавляем inline стили для форм checkout (загружаются последними)
+        $checkout_inline_css = '
+        .checkout-page .checkout-section .input-text,
+        .checkout-page .checkout-section input[type="text"],
+        .checkout-page .checkout-section input[type="email"],
+        .checkout-page .checkout-section input[type="tel"] {
+            width: 100% !important;
+            padding: 12px 16px !important;
+            border: 1px solid #ddd !important;
+            border-radius: 4px !important;
+            font-size: 16px !important;
+            font-family: Manrope, sans-serif !important;
+            font-weight: 400 !important;
+            color: #000 !important;
+            background: #fff !important;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+            box-sizing: border-box !important;
+        }
+        .checkout-page .checkout-section select,
+        .checkout-page .checkout-section .country_select,
+        .checkout-page .checkout-section .state_select {
+            width: 100% !important;
+            padding: 12px 16px !important;
+            border: 1px solid #ddd !important;
+            border-radius: 4px !important;
+            font-size: 16px !important;
+            font-family: Manrope, sans-serif !important;
+            font-weight: 400 !important;
+            color: #000 !important;
+            background-color: #fff !important;
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg width=\'12\' height=\'8\' viewBox=\'0 0 12 8\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M1 1L6 6L11 1\' stroke=\'%23666\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 12px center !important;
+            padding-right: 40px !important;
+            cursor: pointer !important;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+            box-sizing: border-box !important;
+        }
+        .checkout-page .checkout-section .input-text:focus,
+        .checkout-page .checkout-section input:focus,
+        .checkout-page .checkout-section select:focus {
+            border-color: #176DAA !important;
+            box-shadow: 0 0 0 3px rgba(23, 109, 170, 0.1) !important;
+            outline: none !important;
+        }
+        .checkout-page .checkout-section select:hover {
+            border-color: #999 !important;
+        }
+        ';
+        wp_add_inline_style('customshop-checkout', $checkout_inline_css);
     }
 
     // jQuery (уже включен в WordPress)
@@ -89,6 +157,15 @@ function customshop_scripts() {
             'ajax_url' => admin_url('admin-ajax.php'),
         ));
     }
+
+    // Подключаем скрипт авторизации
+    $auth_version = filemtime(get_template_directory() . '/assets/js/auth.js');
+    wp_enqueue_script('customshop-auth', get_template_directory_uri() . '/assets/js/auth.js', array('jquery', 'customshop-add'), $auth_version, true);
+
+    // Локализация для auth.js
+    wp_localize_script('customshop-auth', 'authParams', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+    ));
 
     // Локализация скриптов для AJAX
     wp_localize_script('customshop-add', 'wc_add_to_cart_params', array(

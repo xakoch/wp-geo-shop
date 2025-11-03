@@ -41,12 +41,13 @@ if (!$checkout->is_registration_enabled() && $checkout->is_registration_required
 
             <div class="checkout-page__wrapper">
                 <!-- Левая колонка с формами -->
-                <div class="checkout-page__form">
-
+                <div class="checkout-page__main">
                     <?php do_action('woocommerce_checkout_before_customer_details'); ?>
 
+                    <div class="checkout-page__form">
+
                     <?php
-                    $fields = $checkout->get_checkout_fields();
+                        $fields = $checkout->get_checkout_fields();
                     ?>
 
                     <!-- Contact information -->
@@ -83,7 +84,40 @@ if (!$checkout->is_registration_enabled() && $checkout->is_registration_required
                             <select class="country_select" name="billing_country" id="billing_country" required>
                                 <option value=""><?php _e('Country/Region', 'woocommerce'); ?></option>
                                 <?php
-                                foreach (WC()->countries->get_allowed_countries() as $country_code => $country_name) {
+                                // Try to get countries from WooCommerce
+                                $countries = array();
+
+                                if (function_exists('WC') && WC()->countries) {
+                                    $countries = WC()->countries->get_countries();
+                                }
+
+                                // Fallback to hardcoded countries if empty
+                                if (empty($countries)) {
+                                    $countries = array(
+                                        'LV' => 'Latvia',
+                                        'EE' => 'Estonia',
+                                        'LT' => 'Lithuania',
+                                        'US' => 'United States',
+                                        'GB' => 'United Kingdom',
+                                        'DE' => 'Germany',
+                                        'FR' => 'France',
+                                        'ES' => 'Spain',
+                                        'IT' => 'Italy',
+                                        'PL' => 'Poland',
+                                        'SE' => 'Sweden',
+                                        'NO' => 'Norway',
+                                        'FI' => 'Finland',
+                                        'DK' => 'Denmark',
+                                        'NL' => 'Netherlands',
+                                        'BE' => 'Belgium',
+                                        'AT' => 'Austria',
+                                        'CH' => 'Switzerland',
+                                        'CZ' => 'Czech Republic',
+                                        'RU' => 'Russia'
+                                    );
+                                }
+
+                                foreach ($countries as $country_code => $country_name) {
                                     $selected = ($checkout->get_value('billing_country') == $country_code) ? 'selected' : '';
                                     echo '<option value="' . esc_attr($country_code) . '" ' . $selected . '>' . esc_html($country_name) . '</option>';
                                 }
@@ -129,18 +163,12 @@ if (!$checkout->is_registration_enabled() && $checkout->is_registration_required
                                    placeholder="<?php esc_attr_e('City', 'woocommerce'); ?>"
                                    value="<?php echo esc_attr($checkout->get_value('billing_city')); ?>"
                                    required />
-                            <select class="state_select" name="billing_state" id="billing_state">
-                                <option value=""><?php _e('State/County', 'woocommerce'); ?></option>
-                                <?php
-                                $country = $checkout->get_value('billing_country');
-                                if ($country && WC()->countries->get_states($country)) {
-                                    foreach (WC()->countries->get_states($country) as $state_code => $state_name) {
-                                        $selected = ($checkout->get_value('billing_state') == $state_code) ? 'selected' : '';
-                                        echo '<option value="' . esc_attr($state_code) . '" ' . $selected . '>' . esc_html($state_name) . '</option>';
-                                    }
-                                }
-                                ?>
-                            </select>
+                            <input type="text"
+                                   class="input-text"
+                                   name="billing_state"
+                                   id="billing_state"
+                                   placeholder="<?php esc_attr_e('State/County', 'woocommerce'); ?>"
+                                   value="<?php echo esc_attr($checkout->get_value('billing_state')); ?>" />
                         </div>
 
                         <!-- Postcode & Phone -->
@@ -171,8 +199,6 @@ if (!$checkout->is_registration_enabled() && $checkout->is_registration_required
                         <?php do_action('woocommerce_checkout_shipping'); ?>
                     </div>
                     <?php endif; ?>
-
-                    <?php do_action('woocommerce_checkout_after_customer_details'); ?>
 
                     <!-- Payment options -->
                     <div class="checkout-section">
@@ -252,7 +278,9 @@ if (!$checkout->is_registration_enabled() && $checkout->is_registration_required
                             <?php esc_html_e('Place order', 'woocommerce'); ?>
                         </button>
                     </div>
-                </div>
+
+                    </div><!-- .checkout-page__form -->
+                </div><!-- .checkout-page__main -->
 
                 <!-- Правая колонка - Order summary -->
                 <div class="checkout-page__sidebar">

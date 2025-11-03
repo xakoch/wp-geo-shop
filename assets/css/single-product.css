@@ -1,0 +1,59 @@
+/**
+ * Single Product Page Styles
+ */
+
+/* Price display - swap order so sale price is on left, regular price on right */
+.product-info__price {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Old/regular price (strikethrough) */
+.product-info__price del {
+    order: 2;
+    text-decoration: none;
+}
+
+.product-info__price del .woocommerce-Price-amount {
+    font-size: 16px;
+    font-family: Manrope, sans-serif;
+    font-weight: 400;
+    color: rgba(254,22,22,.4);
+    text-decoration: line-through;
+}
+
+/* New/sale price */
+.product-info__price ins {
+    order: 1;
+    text-decoration: none;
+}
+
+.product-info__price ins .woocommerce-Price-amount {
+    font-size: 22px;
+    font-family: Manrope, sans-serif;
+    font-weight: 400;
+    color: #000;
+}
+
+/* Simple product price (no sale) */
+.product-info__price .woocommerce-Price-amount {
+    font-size: 22px;
+    font-family: Manrope, sans-serif;
+    font-weight: 400;
+    color: #000;
+}
+
+/* Mobile responsive */
+@media only screen and (max-width: 768px) {
+    .product-info__price del .woocommerce-Price-amount {
+        font-size: 18px;
+    }
+
+    .product-info__price ins .woocommerce-Price-amount,
+    .product-info__price .woocommerce-Price-amount {
+        font-size: 24px;
+    }
+}

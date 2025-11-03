@@ -45,7 +45,7 @@ do_action('woocommerce_before_cart');
 
                         if ($_product && $_product->exists() && $cart_item['quantity'] > 0 && apply_filters('woocommerce_cart_item_visible', true, $cart_item, $cart_item_key)) {
                             $product_permalink = apply_filters('woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink($cart_item) : '', $cart_item, $cart_item_key);
-                            $thumbnail = apply_filters('woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key);
+                            $thumbnail = apply_filters('woocommerce_cart_item_thumbnail', $_product->get_image('full'), $cart_item, $cart_item_key);
                             ?>
                             <!-- Товар -->
                             <div class="cart-item woocommerce-cart-form__cart-item" data-cart-item-key="<?php echo esc_attr($cart_item_key); ?>">

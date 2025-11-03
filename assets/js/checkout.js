@@ -6,6 +6,23 @@
 
     $(document).ready(function() {
 
+        // Disable Select2 on country fields
+        $(document.body).on('country_to_state_changing', function() {
+            $('#billing_country, #shipping_country').each(function() {
+                if ($(this).data('select2')) {
+                    $(this).select2('destroy');
+                }
+            });
+        });
+
+        // Prevent Select2 initialization
+        $('#billing_country, #shipping_country').each(function() {
+            $(this).removeClass('select2-hidden-accessible');
+            if ($(this).data('select2')) {
+                $(this).select2('destroy');
+            }
+        });
+
         // Payment method switching
         $('.payment-method input[type="radio"]').on('change', function() {
             const $paymentMethod = $(this).closest('.payment-method');
@@ -51,24 +68,6 @@
 
         // Initialize on page load
         updatePaymentIcons();
-
-        // Country selection change - update states
-        $('#billing_country').on('change', function() {
-            const country = $(this).val();
-            updateStates(country);
-        });
-
-        function updateStates(country) {
-            const $stateSelect = $('#billing_state');
-
-            if (!country) {
-                $stateSelect.html('<option value="">State/County</option>');
-                return;
-            }
-
-            // You can add AJAX call here to get states for selected country
-            // For now, we'll keep it simple
-        }
 
     });
 
